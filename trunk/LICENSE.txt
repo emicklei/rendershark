@@ -1,0 +1,4 @@
+Rendershark - the application server for rendersnake
+Copyright (c) 2012 Ernest Micklei @ Gmail.com
+
+http://www.apache.org/licenses/LICENSE-2.0.html
