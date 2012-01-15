@@ -1,0 +1,17 @@
+YES
+1 action per uri path (get en/of post)
+custom http error page lookup
+
+NO
+geen static file serving
+geen path vars, query vars
+
+TODO
+session ttl
+stats pagina?
+
+
+query. = query parameters
+path.  = path parameters
+session. = session attributes
+body.  = body paramters ?
