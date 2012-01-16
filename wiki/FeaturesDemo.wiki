@@ -1,0 +1,11 @@
+#summary how to build and run the example
+
+=== Install the Netty-Jersey bridge ===
+{{{
+https://github.com/cgbystrom/jersey-netty
+}}}
+
+=== Install renderShark ===
+
+
+=== Run the example ===
