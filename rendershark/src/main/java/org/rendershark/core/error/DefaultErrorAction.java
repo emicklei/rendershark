@@ -8,8 +8,7 @@ import org.rendersnake.HtmlCanvas;
 
 public class DefaultErrorAction implements HttpGetHandler {
     
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
         html.render(new ErrorPageWrapper(new ErrorPage()));
-        return HandlerResult.ok();
     }
 }

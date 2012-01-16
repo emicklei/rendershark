@@ -44,6 +44,22 @@
 		<!-- /renderSnake -->
 
 	</dependencies>
+	
+	<repositories>
+        <repository>
+            <id>rendersnake-repo</id>
+            <name>Repository for rendersnake</name>
+            <url>http://rendersnake.googlecode.com/svn/repo</url>
+        </repository>
+		<repository>
+			<id>repository.jboss.org</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+		
 	<build>
 		<finalName>rendershark-example-jee</finalName>
 

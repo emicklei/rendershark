@@ -26,34 +26,31 @@ public class DispatcherTest {
     @Test
     public void testGet() throws Exception {
         this.addGetHandlerTo(dispatcher, "/get");
-        Assert.assertTrue(dispatcher.handleGet(new URI("/get"), canvas).isHandled);
+        dispatcher.handleGet(new URI("/get"), canvas);
         Assert.assertTrue(canvas.getPageContext().getBoolean("get.handled"));
     }
     
     private void addGetHandlerTo(Dispatcher dispatcher, String uri) {
         dispatcher.register(new HttpGetHandler() {
-            public HandlerResult get(HtmlCanvas html) throws IOException {
+            public void get(HtmlCanvas html, HandlerResult result) throws IOException {
                 LOG.debug("handling get");
                 html.getPageContext().withObject("get.handled", true);
-                return HandlerResult.ok();
             }
         }, uri);
     }
     private void addPostHandlerTo(Dispatcher dispatcher, String uri) {
         dispatcher.register(new HttpPostHandler() {
-            public HandlerResult post(HtmlCanvas html) throws IOException {
+            public void post(HtmlCanvas html,HandlerResult result) throws IOException {
                 LOG.debug("handling post");
                 html.getPageContext().withObject("post.handled", true);
-                return HandlerResult.ok();
             }
         }, uri);
     }
     private void addErrorGetHandlerTo(Dispatcher dispatcher, String uri) {
         dispatcher.register(new HttpGetHandler() {
-            public HandlerResult get(HtmlCanvas html) throws IOException {
+            public void get(HtmlCanvas html, HandlerResult result) throws IOException {
                 LOG.debug("handling error");
                 html.getPageContext().withObject("error.handled", true);
-                return HandlerResult.ok();
             }
         }, uri);
     }

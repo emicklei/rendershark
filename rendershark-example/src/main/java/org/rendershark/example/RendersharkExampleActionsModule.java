@@ -15,7 +15,7 @@ import org.rendershark.example.action.XmlDocumentAction;
 
 import com.google.inject.AbstractModule;
 
-public class RenderflyExampleActionsModule  extends AbstractModule {
+public class RendersharkExampleActionsModule  extends AbstractModule {
     
     public void configure() {
         bind(HomeAction.class);

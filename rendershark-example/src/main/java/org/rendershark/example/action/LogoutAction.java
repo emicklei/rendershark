@@ -13,8 +13,8 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/logout.html")
 public class LogoutAction implements HttpGetHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html,HandlerResult result) throws IOException {
         ((HttpSession)html.getSession()).invalidate();
-        return HandlerResult.redirectTo("/index.html");
+        result.redirectTo("/index.html");
     }        
 }

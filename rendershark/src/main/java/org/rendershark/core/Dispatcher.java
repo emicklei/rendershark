@@ -50,13 +50,15 @@ public class Dispatcher {
                     break;
                 }
             }
-        }         
+        }   
+        final HandlerResult result = new HandlerResult();
         if (handler == null) {
             LOG.warn("No HttpGetHandler declared for handling GET [" + uri + "]");
-            return HandlerResult.unhandled();
-        } else {
-            return handler.get(canvas);
+            result.unhandled();
+        } else {            
+            handler.get(canvas,result);
         }
+        return result;
     }
 
     public HandlerResult handlePost(URI uri, HtmlCanvas canvas) throws IOException  {
@@ -73,13 +75,15 @@ public class Dispatcher {
                     break;
                 }
             }
-        }        
+        }   
+        final HandlerResult result = new HandlerResult();
         if (handler == null) {
             LOG.warn("No HttpPostHandler declared for handling POST [" + uri + "]");
-            return HandlerResult.unhandled();
-        } else {            
-            return handler.post(canvas);
+            result.unhandled();
+        } else {                        
+            handler.post(canvas,result);
         }
+        return result;
     }
     
     private boolean canMapUriTo(URI uri, String key, PageContext context) {
@@ -113,12 +117,13 @@ public class Dispatcher {
 
     public void handleErrorStatus(URI uri, HttpResponseStatus status, HtmlCanvas canvas) throws IOException  {
     	String path = "/" + status.getCode() + ".html";
-    	canvas.getPageContext().withObject(ErrorConstants.CONTEXT_URI, uri); // TODO constants
-    	canvas.getPageContext().withObject(ErrorConstants.CONTEXT_STATUS, status);
+    	canvas.getPageContext()
+    	    .withObject(ErrorConstants.CONTEXT_URI, uri) // TODO constants
+    	    .withObject(ErrorConstants.CONTEXT_STATUS, status);
     	HttpGetHandler handler = getHandlerMap.get(path);
         if (handler == null)
             handler = this.defaultErrorAction;
-        handler.get(canvas);
+        handler.get(canvas,new HandlerResult());
     }
     
     @Inject

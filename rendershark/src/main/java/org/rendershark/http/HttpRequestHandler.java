@@ -40,6 +40,7 @@ import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 import org.jboss.netty.util.CharsetUtil;
 import org.rendershark.core.Dispatcher;
 import org.rendershark.core.HandlerResult;
+import org.rendershark.core.HttpHeader;
 import org.rendershark.core.error.ErrorConstants;
 import org.rendershark.http.session.HttpSession;
 import org.rendershark.http.session.SessionManager;
@@ -173,7 +174,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             canvas.getPageContext().withObject(ErrorConstants.CONTEXT_EXCEPTION, ex);
             this.dispatcher.handleErrorStatus(uri, HttpResponseStatus.INTERNAL_SERVER_ERROR, canvas);
             status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-            result = HandlerResult.ok();
+            result = new HandlerResult();
         }
         if (!result.isHandled) {
             this.dispatcher.handleErrorStatus(uri, HttpResponseStatus.NOT_FOUND, canvas);
@@ -230,8 +231,8 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, status);
         response.setContent(ChannelBuffers.copiedBuffer(buffer.toString(), CharsetUtil.UTF_8));  // TODO now entire page is in buffer before copy ; optimize this
         if (handlerResultOrNull != null && handlerResultOrNull.hasHeaders()) {
-            for (Map.Entry<String,String> each : handlerResultOrNull.getHeaders().entrySet()) {
-                response.setHeader(each.getKey(),each.getValue());
+            for (HttpHeader each : handlerResultOrNull.getHeaders()) {
+                response.setHeader(each.name,each.value);
             }
         } else {
             response.setHeader(CONTENT_TYPE, "text/html; charset=UTF-8");

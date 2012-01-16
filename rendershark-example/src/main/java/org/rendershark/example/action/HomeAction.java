@@ -13,8 +13,7 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/index.html")
 public class HomeAction implements HttpGetHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
         html.render(new HomePage());
-        return HandlerResult.ok();
     }   
 }

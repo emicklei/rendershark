@@ -12,7 +12,7 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/redirect.html")
 public class RedirectAction implements HttpGetHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
-        return HandlerResult.redirectTo("/login.html");
+    public void get(HtmlCanvas html,HandlerResult result) throws IOException {
+        result.redirectTo("/login.html");
     }
 }

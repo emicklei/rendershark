@@ -16,11 +16,10 @@ import org.rendersnake.internal.ContextMap;
 @Singleton @Named("/cookie.html")
 public class CookieAction implements HttpGetHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
         
         ContextMap cookies = html.getPageContext().getContextMap(PageContext.REQUEST_COOKIES);
         Cookie a = (Cookie)cookies.getObject("a");
-        HandlerResult result = HandlerResult.ok();
         if (a == null) {
             Cookie newCookie = new DefaultCookie("a","i am a cookie");
             //Cookie newCookie = new DefaultCookie("a","b");
@@ -32,7 +31,5 @@ public class CookieAction implements HttpGetHandler {
         } else {
             html.h3().content("Cookie is present, value is: " + a.getValue());
         }
-        
-        return result;
     }
 }
