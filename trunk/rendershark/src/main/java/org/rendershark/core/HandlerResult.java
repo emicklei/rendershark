@@ -25,17 +25,17 @@ import org.jboss.netty.handler.codec.http.Cookie;
 public class HandlerResult {
     public String redirectUrl;
     public String forwardUrl;
-    public boolean isHandled = false;
-    public Map<String,String> headers = null; // lazy initialize
+    public boolean isHandled = true;
+    public Set<HttpHeader> responseHeaders = null; // lazy initialize
     public Set<Cookie> cookies = null; // lazy initialize
 
     public HandlerResult addHeader(String headerName, String headerValue) {
-        if (headers == null) {
-            headers = new HashMap<String,String>();
+        if (responseHeaders == null) {
+            responseHeaders = new HashSet<HttpHeader>();
             // add the default ; may be overwritten
-            headers.put("Content-Type","text/html; charset=UTF-8");
+            responseHeaders.add(new HttpHeader("Content-Type","text/html;charset=UTF-8"));
         }
-        headers.put(headerName,headerValue);
+        responseHeaders.add(new HttpHeader(headerName,headerValue));
         return this;
     }
     
@@ -47,42 +47,29 @@ public class HandlerResult {
         return this;
     }
     
-    public static HandlerResult redirectTo(String url) {
-        HandlerResult r = new HandlerResult();
-        r.redirectUrl = url;
-        return r;
+    public HandlerResult redirectTo(String url) {
+        this.redirectUrl = url;
+        return this;
     }
-    public static HandlerResult forwardTo(String url) {
-        HandlerResult r = new HandlerResult();
-        r.forwardUrl = url;
-        return r;
+    public HandlerResult forwardTo(String url) {
+        this.forwardUrl = url;
+        return this;
     }
 
-    public static HandlerResult ok() {
-        return new HandlerResult().beHandled();
-    }
-
-    public static HandlerResult unhandled() {
-        return new HandlerResult();
-    }
-    
     public boolean isRedirect() {
         return redirectUrl != null;
     }
 
     public boolean isForward() {
         return forwardUrl != null;
-    }
-    
-    public HandlerResult beHandled() {
-        isHandled = true;
-        return this;
-    }
+    }    
     public boolean isHandled() { return isHandled; }
     
-    public boolean hasHeaders() { return headers != null; }
+    public boolean hasHeaders() { return responseHeaders != null; }
 
     public boolean hasCookies() { return cookies != null; }
     
-    public Map<String,String> getHeaders() { return Collections.unmodifiableMap(headers); }
+    public Set<HttpHeader> getHeaders() { return responseHeaders; }
+
+    public void unhandled() { isHandled = false; }
 }

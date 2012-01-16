@@ -16,14 +16,12 @@ public class JMXAction implements HttpGetHandler , HttpPostHandler {
 
     JMXControlPage control = new JMXControlPage();
     
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
         html.render(new JMXLayoutWrapper(control));
-        return HandlerResult.ok();
     }
 
-    public HandlerResult post(HtmlCanvas html) throws IOException {
-        
-        return HandlerResult.redirectTo("/internal/jmx.html");
+    public void post(HtmlCanvas html, HandlerResult result) throws IOException {        
+        result.redirectTo("/internal/jmx.html");
     }
     
     public JMXControlPage getControlPage() { return control; }

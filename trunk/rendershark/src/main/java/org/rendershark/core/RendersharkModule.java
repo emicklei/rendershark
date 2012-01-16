@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 
-public abstract class RenderflyModule extends AbstractModule {
-    private static final Logger LOG = LoggerFactory.getLogger(RenderflyModule.class);
+public abstract class RendersharkModule extends AbstractModule {
+    private static final Logger LOG = LoggerFactory.getLogger(RendersharkModule.class);
     
     @Override
     protected void configure() {
@@ -25,7 +25,7 @@ public abstract class RenderflyModule extends AbstractModule {
         bind(LoggerManager.class).toInstance(new LoggerManager());
     }
     
-    public static class REST extends RenderflyModule {
+    public static class REST extends RendersharkModule {
 
         @Override
         protected void configure() {
@@ -34,12 +34,12 @@ public abstract class RenderflyModule extends AbstractModule {
             bind(ChannelPipelineFactory.class).to(HttpRESTPipelineFactory.class);
         }
     }
-    public static class HTML extends RenderflyModule {
+    public static class HTML extends RendersharkModule {
 
         @Override
         protected void configure() {
             super.configure();
-            LOG.info("Configure for HTML processing");
+            LOG.info("Configure for HTML rendering");
             bind(ChannelPipelineFactory.class).to(HttpServerPipelineFactory.class);
             bind(HttpSelectiveContentCompressor.class);
             bind(HttpRequestHandler.class);

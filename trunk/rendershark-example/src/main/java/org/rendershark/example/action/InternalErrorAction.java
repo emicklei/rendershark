@@ -13,7 +13,7 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/500.html")
 public class InternalErrorAction implements HttpGetHandler {
 
-	public HandlerResult get(HtmlCanvas html) throws IOException {
+	public void get(HtmlCanvas html, HandlerResult result) throws IOException {
 		Exception ex = (Exception)html.getPageContext().getObject(ErrorConstants.CONTEXT_EXCEPTION);
 		html.html().body().h1().content("Internal Error (you can create your own 500)");
 		
@@ -21,7 +21,5 @@ public class InternalErrorAction implements HttpGetHandler {
 			html.write(each.toString()).br();
 		}
 		html._body()._html();
-		
-		return HandlerResult.ok();
 	}
 }

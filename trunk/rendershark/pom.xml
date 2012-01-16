@@ -1,184 +1,192 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.rendershark</groupId>
-  <artifactId>rendershark</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>org.rendershark</groupId>
+	<artifactId>rendershark</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>rendershark</name>
-  <url>http://maven.apache.org</url>
+	<name>rendershark</name>
+	<url>http://maven.apache.org</url>
 
-  	<properties>
-  		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  		<infinispan.version>5.0.0.FINAL</infinispan.version>
-  		<jmockit.version>0.999.10</jmockit.version>
-  	</properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<infinispan.version>5.0.0.FINAL</infinispan.version>
+		<jmockit.version>0.999.10</jmockit.version>
+	</properties>
 
-  	<dependencies>
-  		<!--  REST via Jersey https://github.com/cgbystrom/jersey-netty -->
-  		<dependency>	
-  		    <groupId>com.sun.jersey</groupId>
-  		    <artifactId>jersey-netty</artifactId>
-  		    <version>1.0.0-SNAPSHOT</version>
-  		</dependency>
+	<dependencies>
+		<!--  REST via Jersey https://github.com/cgbystrom/jersey-netty -->
+		<dependency>	
+		    <groupId>com.sun.jersey</groupId>
+		    <artifactId>jersey-netty</artifactId>
+		    <version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- JAX WS REST Jersey -->
+		<!-- http://download.java.net/maven/2/com/sun/jersey/jersey-server/  -->
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<!--  END Jersey -->	
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
 
-  		<!-- JAX WS REST Jersey -->
-  		<!-- http://download.java.net/maven/2/com/sun/jersey/jersey-server/  -->
-  		<dependency>
-  			<groupId>com.sun.jersey</groupId>
-  			<artifactId>jersey-core</artifactId>
-  			<version>1.8</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>com.sun.jersey</groupId>
-  			<artifactId>jersey-server</artifactId>
-  			<version>1.8</version>
-  		</dependency>
-  		<!--  END Jersey -->	
+		<dependency>
+			<groupId>mockit</groupId>
+			<artifactId>jmockit</artifactId>
+			<version>${jmockit.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-  		<dependency>
-  			<groupId>junit</groupId>
-  			<artifactId>junit</artifactId>
-  			<version>4.8.2</version>
-  			<scope>test</scope>
-  		</dependency>
+		<!-- renderSnake -->
+		<dependency>
+			<groupId>org.rendersnake</groupId>
+			<artifactId>rendersnake</artifactId>
+			<version>1.4.1</version>
+		</dependency>
 
-  		<dependency>
-  			<groupId>mockit</groupId>
-  			<artifactId>jmockit</artifactId>
-  			<version>${jmockit.version}</version>
-  			<scope>test</scope>
-  		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>		
+		<!-- end renderSnake -->
 
-  		<!-- renderSnake -->
-  		<dependency>
-  			<groupId>org.rendersnake</groupId>
-  			<artifactId>rendersnake</artifactId>
-  			<version>1.4.1</version>
-  		</dependency>
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.7.Final</version>
+		</dependency>
 
-  		<dependency>
-  			<groupId>org.apache.commons</groupId>
-  			<artifactId>commons-lang3</artifactId>
-  			<version>3.0.1</version>
-  		</dependency>
+		<!-- Guice -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
 
-  		<dependency>
-  			<groupId>commons-io</groupId>
-  			<artifactId>commons-io</artifactId>
-  			<version>2.0.1</version>
-  		</dependency>		
-  		<!-- end renderSnake -->
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.6</version>
+		</dependency>
 
-  		<dependency>
-  			<groupId>org.jboss.netty</groupId>
-  			<artifactId>netty</artifactId>
-  			<version>3.2.7.Final</version>
-  		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jmxri</artifactId>
+					<groupId>com.sun.jmx</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxtools</artifactId>
+					<groupId>com.sun.jdmk</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jms</artifactId>
+					<groupId>javax.jms</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- end of Logging -->
 
-  		<!-- Guice -->
-  		<dependency>
-  			<groupId>com.google.inject</groupId>
-  			<artifactId>guice</artifactId>
-  			<version>3.0</version>
-  		</dependency>
+		<!-- Session Cache
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.3.1</version>
+			<type>pom</type>
+		</dependency -->
 
-  		<!-- Logging -->
-  		<dependency>
-  			<groupId>org.slf4j</groupId>
-  			<artifactId>slf4j-log4j12</artifactId>
-  			<version>1.5.6</version>
-  		</dependency>
+        <!-- Session Cache -->
+        <dependency>
+          <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${infinispan.version}</version>
+       </dependency>
 
-  		<dependency>
-  			<groupId>log4j</groupId>
-  			<artifactId>log4j</artifactId>
-  			<version>1.2.15</version>
-  			<exclusions>
-  				<exclusion>
-  					<artifactId>jmxri</artifactId>
-  					<groupId>com.sun.jmx</groupId>
-  				</exclusion>
-  				<exclusion>
-  					<artifactId>jmxtools</artifactId>
-  					<groupId>com.sun.jdmk</groupId>
-  				</exclusion>
-  				<exclusion>
-  					<artifactId>jms</artifactId>
-  					<groupId>javax.jms</groupId>
-  				</exclusion>
-  			</exclusions>
-  		</dependency>
-  		<!-- end of Logging -->
+	</dependencies>
 
-          <!-- Session Cache -->
-          <dependency>
-            <groupId>org.infinispan</groupId>
-           <artifactId>infinispan-core</artifactId>
-           <version>${infinispan.version}</version>
-         </dependency>
+	<repositories>
 
-  	</dependencies>
+        <repository>
+            <id>rendersnake-repo</id>
+            <name>Repository for rendersnake</name>
+            <url>http://rendersnake.googlecode.com/svn/repo</url>
+        </repository>
 
-  	<repositories>
+		<repository>
+			<id>repository.jboss.org</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
-          <repository>
-              <id>rendersnake-repo</id>
-              <name>Repository for rendersnake</name>
-              <url>http://rendersnake.googlecode.com/svn/repo</url>
-          </repository>
+	<build>
+		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>org.rendershark.http.HttpServer</Main-Class>
+                        </manifestEntries>
+                    </archive>
+					<manifest>
+            			<mainClass>org.rendershark.http.HttpServer</mainClass>
+            			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+          			</manifest>                    
+                </configuration>
+            </plugin>				
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<!-- compilerArgument>-proc:none</compilerArgument -->
+				</configuration>
+			</plugin>
+			
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <!-- <scriptableOutput>true</scriptableOutput> -->
+                </configuration>
+            </plugin>						
+			
+		</plugins>
+	</build>
 
-  		<repository>
-  			<id>repository.jboss.org</id>
-  			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-  			<snapshots>
-  				<enabled>false</enabled>
-  			</snapshots>
-  		</repository>
-  	</repositories>
-
-  	<build>
-  		<plugins>
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-jar-plugin</artifactId>
-                  <version>2.3.1</version>
-                  <configuration>
-                      <archive>
-                          <manifestEntries>
-                              <Main-Class>org.rendershark.http.HttpServer</Main-Class>
-                          </manifestEntries>
-                      </archive>
-  					<manifest>
-              			<mainClass>org.rendershark.http.HttpServer</mainClass>
-              			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            			</manifest>                    
-                  </configuration>
-              </plugin>				
-
-  			<plugin>
-  				<groupId>org.apache.maven.plugins</groupId>
-  				<artifactId>maven-compiler-plugin</artifactId>
-  				<version>2.3.2</version>
-  				<configuration>
-  					<source>1.6</source>
-  					<target>1.6</target>
-  					<!-- compilerArgument>-proc:none</compilerArgument -->
-  				</configuration>
-  			</plugin>
-
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-dependency-plugin</artifactId>
-                  <version>2.2</version>
-                  <configuration>
-                      <!-- <scriptableOutput>true</scriptableOutput> -->
-                  </configuration>
-              </plugin>						
-
-  		</plugins>
-  	</build>
-
-  </project>
+</project>

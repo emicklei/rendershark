@@ -12,7 +12,7 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/forward.html")
 public class ForwardAction implements HttpGetHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
-        return HandlerResult.forwardTo("/login.html");
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
+        result.forwardTo("/login.html");
     }
 }

@@ -13,12 +13,12 @@ import org.rendersnake.HtmlCanvas;
 @Singleton @Named("/error.html")
 public class ErrorAction implements HttpGetHandler, HttpPostHandler {
 
-    public HandlerResult get(HtmlCanvas html) throws IOException {
+    public void get(HtmlCanvas html, HandlerResult result) throws IOException {
         throw new RuntimeException("error GET test");
     }
 
 	@Override
-	public HandlerResult post(HtmlCanvas html) throws IOException {
+	public void post(HtmlCanvas html, HandlerResult result) throws IOException {
 		throw new RuntimeException("error POST test");
 	}   
 }

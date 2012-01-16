@@ -14,13 +14,13 @@ import org.rendersnake.HtmlCanvas;
 public class XmlDocumentAction implements HttpGetHandler {
 
     @Override
-    public HandlerResult get(HtmlCanvas xml) throws IOException {
+    public void get(HtmlCanvas xml,HandlerResult result) throws IOException {
         
         // inline page
         xml.render(DocType.XML_1_0);
         xml.tag("sample",xml.attributes().add("key", "value"));
         xml.close();
         
-        return HandlerResult.ok().addHeader("Content-Type", "application/xml");
+        result.addHeader("Content-Type", "application/xml");
     }
 }
