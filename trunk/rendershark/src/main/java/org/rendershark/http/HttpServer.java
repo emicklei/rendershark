@@ -61,9 +61,13 @@ public class HttpServer {
         bootstrap.setPipelineFactory(factory);
 
         // Bind and start to accept incoming connections.
-        bootstrap.bind(new InetSocketAddress(port));
+        InetSocketAddress localAddress = new InetSocketAddress(port);
+        bootstrap.bind(localAddress);
 
-        LOG.info(getVersion() + " is ready for business and listens to http://localhost:" + port);
+        LOG.info(getVersion() + 
+                " is ready for business and listens to " +
+                "http://" + localAddress.getHostName() + 
+                ":" + port);
     }
     
     
