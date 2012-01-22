@@ -15,14 +15,23 @@ import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Injector;
 import com.sun.jersey.api.container.ContainerFactory;
 import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory;
 import com.sun.jersey.server.impl.container.netty.NettyHandlerContainer;
 
 public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     private static final Logger LOG = LoggerFactory.getLogger(HttpRESTPipelineFactory.class);
 
+    private Injector injector;
+    
+    @Inject public HttpRESTPipelineFactory(Injector injector) {
+        LOG.debug("constructing with:"+injector);
+        this.injector = injector;
+    }
+    
     @Inject @Named("com.sun.jersey.server.impl.container.netty.baseUri") String baseUri;
     @Inject @Named("com.sun.jersey.config.property.classnames") String classNames;
     
@@ -48,6 +57,9 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
         props.put(NettyHandlerContainer.PROPERTY_BASE_URI, baseUri);
         ResourceConfig rcf = new ClassNamesResourceConfig(props);
 
-        return ContainerFactory.createContainer(NettyHandlerContainer.class, rcf);
+        return ContainerFactory.createContainer(
+                NettyHandlerContainer.class, 
+                rcf, 
+                new GuiceComponentProviderFactory(rcf,this.injector));
     }
 }
