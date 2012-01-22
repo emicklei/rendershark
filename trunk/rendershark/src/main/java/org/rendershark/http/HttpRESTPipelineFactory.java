@@ -34,6 +34,7 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     
     @Inject @Named("com.sun.jersey.server.impl.container.netty.baseUri") String baseUri;
     @Inject @Named("com.sun.jersey.config.property.classnames") String classNames;
+    @Inject @Named("com.sun.jersey.spi.container.ContainerRequestFilters") String filterNames;
     
     @Override
     public ChannelPipeline getPipeline() throws Exception {
@@ -55,6 +56,11 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
         if (baseUri == null)
             LOG.warn("Missing property [com.sun.jersey.server.impl.container.netty.baseUri]");
         props.put(NettyHandlerContainer.PROPERTY_BASE_URI, baseUri);
+        
+        // http://blogs.oracle.com/sandoz/entry/tracing_in_jersey
+        props.put("com.sun.jersey.config.feature.TracePerRequest", true); // make props
+        props.put("com.sun.jersey.config.feature.Trace",true); // TODO make props
+        props.put("com.sun.jersey.spi.container.ContainerRequestFilters", filterNames);
         ResourceConfig rcf = new ClassNamesResourceConfig(props);
 
         return ContainerFactory.createContainer(
