@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 
@@ -27,29 +28,46 @@ public class HttpServer {
             System.out.println(getVersion() + "\nrendershark [path/to/rendershark.properties]");
             return;
         }
-        // Try loading rendershark specific properties
-    	final Properties serverProperties = new Properties(); 
-        try {
-        	serverProperties.load(new FileInputStream(args[0]));
-        } catch (Exception ex) {
-        	LOG.error("Unable to load properties from;" + args[0], ex);
-        	return;
-        }
-        // Create options to validate and interpret
-        Options options = new Options(serverProperties); 
+        HttpServer me = new HttpServer();
+        Properties serverProperties = me.createProperties(args[0]);
+        if  (serverProperties == null) return;
+        
+        Options options = new Options(serverProperties);
         if (!options.isValid()) return;
         
+        AbstractModule propertiesModule = me.createPropertiesModule(serverProperties); 
+        Injector injector = Guice.createInjector(propertiesModule, options.serverModule);        
+        me.startListeningOn(injector, options.port);
+    }
+    
+    public Properties createProperties(String location) {
+        final Properties serverProperties = new Properties(); 
+        try {
+            serverProperties.load(new FileInputStream(location));
+        } catch (Exception ex) {
+            LOG.error("Unable to load properties from;" + location, ex);
+            return null;
+        }
+        return serverProperties;
+    }
+    
+    public AbstractModule createPropertiesModule(String location) {
+        return this.createPropertiesModule(this.createProperties(location));
+    }
+    
+    public AbstractModule createPropertiesModule(final Properties serverProperties) {
+        if (serverProperties == null) return null;
         // Wrap properties to bind into local Module
         AbstractModule propertiesModule = new AbstractModule() {
             protected void configure() {
                Names.bindProperties(this.binder(),serverProperties); 
             }
-        };        
-        Injector injector = Guice.createInjector(propertiesModule, options.serverModule);        
-        startListeningOn(injector, options.port);
+        };
+        return propertiesModule;
     }
 
-    public static void startListeningOn(Injector injector, int port) {
+    
+    public void startListeningOn(Injector injector, int port) {
         // Configure the server.
         ServerBootstrap bootstrap = new ServerBootstrap(
                 new NioServerSocketChannelFactory(
