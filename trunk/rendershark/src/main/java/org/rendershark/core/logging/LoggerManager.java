@@ -30,6 +30,8 @@ public class LoggerManager implements LoggerManagerMBean {
             LoggerManager mgr = new LoggerManager();
             mbs.registerMBean(mgr, name);
             LOG.info("Install LoggerManager MBean");
+        } catch (javax.management.InstanceAlreadyExistsException iex) {
+            LOG.warn("Already installed LoggerManager");
         } catch (Exception e) {
             LOG.error("Failed to install LoggerManager", e);
         }
