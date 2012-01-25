@@ -61,6 +61,9 @@ public class HttpServer {
         AbstractModule propertiesModule = new AbstractModule() {
             protected void configure() {
                Names.bindProperties(this.binder(),serverProperties); 
+               this.bind(Properties.class)
+               	.annotatedWith(Names.named("resourceconfig.properties"))
+               	.toInstance(serverProperties);
             }
         };
         return propertiesModule;
@@ -79,7 +82,7 @@ public class HttpServer {
         bootstrap.setPipelineFactory(factory);
 
         // Bind and start to accept incoming connections.
-        InetSocketAddress localAddress = new InetSocketAddress(port);
+        InetSocketAddress localAddress = new InetSocketAddress("localhost", port);
         bootstrap.bind(localAddress);
 
         LOG.info(getVersion() + 
