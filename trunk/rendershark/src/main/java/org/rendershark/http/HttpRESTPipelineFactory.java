@@ -22,24 +22,26 @@ import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory;
 import com.sun.jersey.server.impl.container.netty.NettyHandlerContainer;
-
+/**
+ * 
+ * For tracing properties: http://blogs.oracle.com/sandoz/entry/tracing_in_jersey
+ * @author emicklei
+ *
+ */
 public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     private static final Logger LOG = LoggerFactory.getLogger(HttpRESTPipelineFactory.class);
-
+    public static final String PROPERTIES_NAME = "resourceconfig.properties";
+    
     private Injector injector;
     
     @Inject public HttpRESTPipelineFactory(Injector injector) {
-        LOG.debug("constructing with:"+injector);
         this.injector = injector;
     }
-    @Inject @Named("resourceconfig.properties") Properties properties;
+    @Inject @Named(PROPERTIES_NAME) Properties properties;
     
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline = pipeline();
-        if (LOG.isDebugEnabled())
-            LOG.debug("getPipeline:" + pipeline.hashCode());
-
         pipeline.addLast("decoder", new HttpRequestDecoder());
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("jerseyHandler", this.createKerseyHandler());
@@ -50,15 +52,13 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
         Map<String, Object> props = new HashMap<String, Object>();
         for (Object key : properties.keySet()) {
         	props.put((String)key, properties.get(key));
+        	LOG.trace(key+"="+properties.get(key));
         }        
         if (props.get(ClassNamesResourceConfig.PROPERTY_CLASSNAMES) == null)
             LOG.warn("Missing property [com.sun.jersey.config.property.classnames]");
         if (props.get(NettyHandlerContainer.PROPERTY_BASE_URI) == null)
             LOG.warn("Missing property [com.sun.jersey.server.impl.container.netty.baseUri]");
 
-        // http://blogs.oracle.com/sandoz/entry/tracing_in_jersey
-        // props.put("com.sun.jersey.config.feature.TracePerRequest", true); // make props
-        // props.put("com.sun.jersey.config.feature.Trace",true); // TODO make props
         ResourceConfig rcf = new ClassNamesResourceConfig(props);
 
         return ContainerFactory.createContainer(
