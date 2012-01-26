@@ -62,7 +62,7 @@ public class HttpServer {
             protected void configure() {
                Names.bindProperties(this.binder(),serverProperties); 
                this.bind(Properties.class)
-               	.annotatedWith(Names.named("resourceconfig.properties"))
+               	.annotatedWith(Names.named(HttpRESTPipelineFactory.PROPERTIES_NAME))
                	.toInstance(serverProperties);
             }
         };
@@ -82,7 +82,7 @@ public class HttpServer {
         bootstrap.setPipelineFactory(factory);
 
         // Bind and start to accept incoming connections.
-        InetSocketAddress localAddress = new InetSocketAddress("localhost", port);
+        InetSocketAddress localAddress = new InetSocketAddress(port);
         bootstrap.bind(localAddress);
 
         LOG.info(getVersion() + 
