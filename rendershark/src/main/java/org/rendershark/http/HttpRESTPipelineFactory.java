@@ -33,22 +33,31 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     public static final String PROPERTIES_NAME = "resourceconfig.properties";
     
     private Injector injector;
+    private NettyHandlerContainer container;
     
     @Inject public HttpRESTPipelineFactory(Injector injector) {
         this.injector = injector;
     }
     @Inject @Named(PROPERTIES_NAME) Properties properties;
     
+    /**
+     * It is assumed the NettyHandlerContainer can be a singleton for all pipelines.
+     */
+    @Inject
+    void prepareJerseyHandler() {
+        this.container = this.createJerseyHandler();
+    }
+    
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline = pipeline();
         pipeline.addLast("decoder", new HttpRequestDecoder());
         pipeline.addLast("encoder", new HttpResponseEncoder());
-        pipeline.addLast("jerseyHandler", this.createKerseyHandler());
+        pipeline.addLast("jerseyHandler", this.container);
         return pipeline;
     }
 
-    private NettyHandlerContainer createKerseyHandler() {
+    private NettyHandlerContainer createJerseyHandler() {
         Map<String, Object> props = new HashMap<String, Object>();
         for (Object key : properties.keySet()) {
         	props.put((String)key, properties.get(key));
