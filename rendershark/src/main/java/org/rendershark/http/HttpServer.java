@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.slf4j.Logger;
@@ -69,8 +70,13 @@ public class HttpServer {
         return propertiesModule;
     }
 
-    
-    public void startListeningOn(Injector injector, int port) {
+    /**
+     * Open a Channel that accepts incoming connections on the localhost at a given port.
+     * @param injector
+     * @param port
+     * @return accepting channel
+     */
+    public Channel startListeningOn(Injector injector, int port) {
         // Configure the server.
         ServerBootstrap bootstrap = new ServerBootstrap(
                 new NioServerSocketChannelFactory(
@@ -83,12 +89,13 @@ public class HttpServer {
 
         // Bind and start to accept incoming connections.
         InetSocketAddress localAddress = new InetSocketAddress(port);
-        bootstrap.bind(localAddress);
+        Channel acceptingChannel = bootstrap.bind(localAddress);
 
         LOG.info(getVersion() + 
                 " is ready for business and listens to " +
                 "http://" + localAddress.getHostName() + 
-                ":" + port);
+                ":" + port);        
+        return acceptingChannel;
     }
     
     
