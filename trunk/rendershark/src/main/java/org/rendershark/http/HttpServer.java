@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 
@@ -24,24 +24,36 @@ import com.google.inject.name.Names;
 public class HttpServer {
     private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
     
+    private Injector injector;
+    private int acceptingPort;
+    private Channel acceptingChannel;    
+    
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(getVersion() + "\nrendershark [path/to/rendershark.properties]");
             return;
         }
         HttpServer me = new HttpServer();
-        Properties serverProperties = me.createProperties(args[0]);
+        me.init(args);
+        me.startUp();
+    }
+    public void init(String[] args) {
+        Properties serverProperties = this.loadProperties(args[0]);
         if  (serverProperties == null) return;
         
         Options options = new Options(serverProperties);
         if (!options.isValid()) return;
         
-        AbstractModule propertiesModule = me.createPropertiesModule(serverProperties); 
-        Injector injector = Guice.createInjector(propertiesModule, options.serverModule);        
-        me.startListeningOn(injector, options.port);
+        AbstractModule propertiesModule = createPropertiesModule(serverProperties); 
+        this.init(Guice.createInjector(propertiesModule, options.serverModule),options.port);
+    }    
+    
+    public void init(Injector injector, int listeningPort) {
+        this.injector = injector;
+        this.acceptingPort = listeningPort;
     }
     
-    public Properties createProperties(String location) {
+    public Properties loadProperties(String location) {
         final Properties serverProperties = new Properties(); 
         try {
             serverProperties.load(new FileInputStream(location));
@@ -51,12 +63,8 @@ public class HttpServer {
         }
         return serverProperties;
     }
-    
-    public AbstractModule createPropertiesModule(String location) {
-        return this.createPropertiesModule(this.createProperties(location));
-    }
-    
-    public AbstractModule createPropertiesModule(final Properties serverProperties) {
+    // TODO move this to another
+    public static AbstractModule createPropertiesModule(final Properties serverProperties) {
         if (serverProperties == null) return null;
         // Wrap properties to bind into local Module
         AbstractModule propertiesModule = new AbstractModule() {
@@ -69,14 +77,14 @@ public class HttpServer {
         };
         return propertiesModule;
     }
-
-    /**
-     * Open a Channel that accepts incoming connections on the localhost at a given port.
-     * @param injector
-     * @param port
-     * @return accepting channel
-     */
-    public Channel startListeningOn(Injector injector, int port) {
+ 
+    public boolean isStarted() { return acceptingChannel != null && acceptingChannel.isBound(); }
+    
+    public boolean startUp() {
+        if (acceptingChannel != null) {
+            LOG.warn("Server was not (yet) properly shutdown.");
+            return false;
+        }
         // Configure the server.
         ServerBootstrap bootstrap = new ServerBootstrap(
                 new NioServerSocketChannelFactory(
@@ -88,16 +96,36 @@ public class HttpServer {
         bootstrap.setPipelineFactory(factory);
 
         // Bind and start to accept incoming connections.
-        InetSocketAddress localAddress = new InetSocketAddress(port);
-        Channel acceptingChannel = bootstrap.bind(localAddress);
+        InetSocketAddress localAddress = new InetSocketAddress(this.acceptingPort);
+        this.acceptingChannel = bootstrap.bind(localAddress);
 
-        LOG.info(getVersion() + 
+        if (acceptingChannel.isOpen()) {
+            LOG.info(getVersion() + 
                 " is ready for business and listens to " +
                 "http://" + localAddress.getHostName() + 
-                ":" + port);        
-        return acceptingChannel;
+                ":" + this.acceptingPort);
+            return true;
+        } else {
+            LOG.error("Unable to start listing on " +
+                "http://" + localAddress.getHostName() + 
+                ":" + this.acceptingPort);
+            return false;
+        }                
+    }    
+    public void shutDown() {
+        if (acceptingChannel == null) {
+            LOG.warn("Server was already shutdown.");
+            return;
+        }        
+        LOG.info("Shutting down the accept channel ; stop listening");
+        ChannelFuture future = acceptingChannel.close();
+        try {
+            future.await();
+        } catch (InterruptedException e) {
+            LOG.error("Interrupt exception caught while waiting for shutdown to complete.");
+        }
+        this.acceptingChannel = null;
     }
-    
     
     public static String getVersion() {
         String implVersion = HttpServer.class.getPackage().getImplementationVersion();
