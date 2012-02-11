@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark</name>
@@ -17,15 +17,12 @@
 	</properties>
 
 	<dependencies>
-		<!--  REST via Jersey https://github.com/cgbystrom/jersey-netty -->
-		<!--  dependency>	
-		    <groupId>com.sun.jersey</groupId>
-		    <artifactId>jersey-netty</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
-		</dependency -->
-		
+		<!-- REST via Jersey https://github.com/cgbystrom/jersey-netty -->
+		<!-- dependency> <groupId>com.sun.jersey</groupId> <artifactId>jersey-netty</artifactId> 
+			<version>1.0.0-SNAPSHOT</version> </dependency -->
+
 		<!-- JAX WS REST Jersey -->
-		<!-- http://download.java.net/maven/2/com/sun/jersey/jersey-server/  -->
+		<!-- http://download.java.net/maven/2/com/sun/jersey/jersey-server/ -->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
@@ -40,9 +37,9 @@
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
 			<version>1.11</version>
-		</dependency>		
-		<!--  END Jersey -->	
-		
+		</dependency>
+		<!-- END Jersey -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -50,12 +47,8 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- dependency>
-			<groupId>mockit</groupId>
-			<artifactId>jmockit</artifactId>
-			<version>${jmockit.version}</version>
-			<scope>test</scope>
-		</dependency -->
+		<!-- dependency> <groupId>mockit</groupId> <artifactId>jmockit</artifactId> 
+			<version>${jmockit.version}</version> <scope>test</scope> </dependency -->
 
 		<!-- renderSnake -->
 		<dependency>
@@ -69,12 +62,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.0.1</version>
-		</dependency>		
+		</dependency>
 		<!-- end renderSnake -->
 
 		<dependency>
@@ -118,30 +111,33 @@
 		</dependency>
 		<!-- end of Logging -->
 
-		<!-- Session Cache
-		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>2.3.1</version>
-			<type>pom</type>
-		</dependency -->
+		<!-- Session Cache <dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache</artifactId> 
+			<version>2.3.1</version> <type>pom</type> </dependency -->
 
-        <!-- Session Cache -->
-        <dependency>
-          <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-core</artifactId>
-         <version>${infinispan.version}</version>
-       </dependency>
+		<!-- Session Cache -->
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-core</artifactId>
+			<version>${infinispan.version}</version>
+		</dependency>
 
 	</dependencies>
 
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>rendershark-repo</id>
+			<url>svn:https://rendershark.googlecode.com/svn/repo</url>
+		</repository>
+	</distributionManagement>
+
 	<repositories>
 
-        <repository>
-            <id>rendersnake-repo</id>
-            <name>Repository for rendersnake</name>
-            <url>http://rendersnake.googlecode.com/svn/repo</url>
-        </repository>
+		<repository>
+			<id>rendersnake-repo</id>
+			<name>Repository for rendersnake</name>
+			<url>http://rendersnake.googlecode.com/svn/repo</url>
+		</repository>
 
 		<repository>
 			<id>repository.jboss.org</id>
@@ -153,24 +149,31 @@
 	</repositories>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<version>1.8</version>
+			</extension>
+		</extensions>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>org.rendershark.http.HttpServer</Main-Class>
-                        </manifestEntries>
-                    </archive>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Main-Class>org.rendershark.http.HttpServer</Main-Class>
+						</manifestEntries>
+					</archive>
 					<manifest>
-            			<mainClass>org.rendershark.http.HttpServer</mainClass>
-            			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-          			</manifest>                    
-                </configuration>
-            </plugin>				
-		
+						<mainClass>org.rendershark.http.HttpServer</mainClass>
+						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+					</manifest>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -181,16 +184,16 @@
 					<!-- compilerArgument>-proc:none</compilerArgument -->
 				</configuration>
 			</plugin>
-			
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <!-- <scriptableOutput>true</scriptableOutput> -->
-                </configuration>
-            </plugin>						
-			
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<!-- <scriptableOutput>true</scriptableOutput> -->
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

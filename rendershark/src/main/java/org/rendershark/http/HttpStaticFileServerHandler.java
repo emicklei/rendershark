@@ -20,6 +20,9 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -56,38 +59,40 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
     
     private FileNameMap fileNameMap = URLConnection.getFileNameMap();
     
-    public HttpStaticFileServerHandler() {
-        super();
-        LOG.info("Created to serve static content from: " + System.getProperty("user.dir"));
-    }
+    @Inject @Named("static.uri.prefix") String uriPrefix = "/static";
+    @Inject @Named("static.local.path") String localPath = System.getProperty("user.dir");   
     
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         HttpRequest request = (HttpRequest) e.getMessage();
         
         // first inspect uri
-        if (!request.getUri().startsWith("/static/")) {
+        if (!request.getUri().startsWith(uriPrefix)) {
             ctx.sendUpstream(e);
             return;
         }
         
         if (request.getMethod() != GET) {
+            LOG.debug("Unsupported method:{}",request.getMethod());
             sendError(ctx, METHOD_NOT_ALLOWED);
             return;
         }
 
         final String path = sanitizeUri(request.getUri());
         if (path == null) {
+            LOG.debug("File forbidden:{}",path);
             sendError(ctx, FORBIDDEN);
             return;
         }
 
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
+            LOG.debug("File does not exists:{}",file.getAbsolutePath());
             sendError(ctx, NOT_FOUND);
             return;
         }
         if (!file.isFile()) {
+            LOG.debug("File forbidden:{}",file.getAbsolutePath());
             sendError(ctx, FORBIDDEN);
             return;
         }
@@ -96,6 +101,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
         try {
             raf = new RandomAccessFile(file, "r");
         } catch (FileNotFoundException fnfe) {
+            LOG.debug("File not found:{}",file.getAbsolutePath());
             sendError(ctx, NOT_FOUND);
             return;
         }
@@ -103,7 +109,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
         setContentLength(response, fileLength);
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE,fileNameMap.getContentTypeFor(file.toString()));
+        String ctype = fileNameMap.getContentTypeFor(file.getName().toString());
+        if (ctype == null) ctype = "application/octet-stream"; // fallback
+        response.setHeader(HttpHeaders.Names.CONTENT_TYPE,ctype);
 
         Channel ch = e.getChannel();
 
@@ -180,7 +188,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
         }
 
         // Convert to absolute path.
-        return System.getProperty("user.dir") + File.separator + uri;
+        return localPath + File.separator + uri;
     }
 
     private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
