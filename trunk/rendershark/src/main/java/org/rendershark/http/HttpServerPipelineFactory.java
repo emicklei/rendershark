@@ -25,9 +25,10 @@ public class HttpServerPipelineFactory implements ChannelPipelineFactory {
     @Inject Provider<HttpResponseEncoder> responseEncoderProvider;
     @Inject Provider<HttpSelectiveContentCompressor> contentCompressorProvider;
     @Inject Provider<HttpRequestHandler> requestHandlerProvider;
+    @Inject Provider<HttpStaticFileServerHandler> staticHandlerProvider;
     
     public ChannelPipeline getPipeline() throws Exception {
-        if (LOG.isTraceEnabled()) LOG.trace("new pipeline");
+        LOG.trace("new pipeline");
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = pipeline();
 
@@ -36,7 +37,7 @@ public class HttpServerPipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("encoder", responseEncoderProvider.get());
         pipeline.addLast("deflater", contentCompressorProvider.get());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
-        pipeline.addLast("static", new HttpStaticFileServerHandler());
+        pipeline.addLast("static", staticHandlerProvider.get());
         pipeline.addLast("handler", requestHandlerProvider.get());
         return pipeline;
     }

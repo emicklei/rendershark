@@ -9,6 +9,7 @@ import org.rendershark.http.HttpRESTPipelineFactory;
 import org.rendershark.http.HttpRequestHandler;
 import org.rendershark.http.HttpSelectiveContentCompressor;
 import org.rendershark.http.HttpServerPipelineFactory;
+import org.rendershark.http.HttpStaticFileServerHandler;
 import org.rendershark.http.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public abstract class RendersharkModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(HttpRequestDecoder.class);
-        bind(HttpResponseDecoder.class);
+        bind(HttpResponseDecoder.class);        
         bind(LoggerManager.class).toInstance(new LoggerManager());
     }
     
@@ -30,7 +31,7 @@ public abstract class RendersharkModule extends AbstractModule {
         @Override
         protected void configure() {
             super.configure();
-            LOG.info("Configure for REST processing");
+            LOG.info("Configure for REST processing");            
             bind(ChannelPipelineFactory.class).to(HttpRESTPipelineFactory.class);
         }
     }
@@ -41,6 +42,7 @@ public abstract class RendersharkModule extends AbstractModule {
             super.configure();
             LOG.info("Configure for HTML rendering");
             bind(ChannelPipelineFactory.class).to(HttpServerPipelineFactory.class);
+            bind(HttpStaticFileServerHandler.class);
             bind(HttpSelectiveContentCompressor.class);
             bind(HttpRequestHandler.class);
             bind(SessionManager.class);        
