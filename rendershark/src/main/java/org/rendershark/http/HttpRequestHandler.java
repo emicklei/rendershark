@@ -44,6 +44,7 @@ import org.rendershark.core.HttpHeader;
 import org.rendershark.core.error.ErrorConstants;
 import org.rendershark.http.session.HttpSession;
 import org.rendershark.http.session.SessionManager;
+import org.rendershark.tools.DebugHtmlCanvas;
 import org.rendersnake.HtmlCanvas;
 import org.rendersnake.PageContext;
 import org.rendersnake.internal.ContextMap;
@@ -79,14 +80,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     @Inject
     Dispatcher dispatcher;
 
-    private final WriteBuffer buffer = new WriteBuffer();
+    private final WriteBuffer buffer = new WriteBuffer(4096);
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
         final HttpRequest request = (HttpRequest) event.getMessage();        
         buffer.reset();
         final URI uri = URI.create(request.getUri());
-        final HtmlCanvas canvas = new HtmlCanvas(buffer);
+        HtmlCanvas canvas = new HtmlCanvas(buffer);
+        // TODO rethink this
+        if (LOG.isDebugEnabled() && "inspect".equals(uri.getQuery())) {
+            canvas = new DebugHtmlCanvas(buffer);
+        }
         final HttpMethod httpMethod = request.getMethod();
 
         final PageContext context = canvas.getPageContext();
@@ -145,7 +150,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                 return;
             }
         } catch (Exception ex) {
-            LOG.error("Failed to handle POST " + uri, ex);
+            LOG.trace("Failed to handle POST " + uri, ex);
             canvas.getPageContext().withObject(ErrorConstants.CONTEXT_EXCEPTION, ex);
             this.dispatcher.handleErrorStatus(uri, HttpResponseStatus.INTERNAL_SERVER_ERROR, canvas);
             status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -170,7 +175,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                 return;
             }
         } catch (Exception ex) {
-            LOG.error("Failed to handle GET " + uri, ex);
+            LOG.trace("Failed to handle GET " + uri, ex);
             canvas.getPageContext().withObject(ErrorConstants.CONTEXT_EXCEPTION, ex);
             this.dispatcher.handleErrorStatus(uri, HttpResponseStatus.INTERNAL_SERVER_ERROR, canvas);
             status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
