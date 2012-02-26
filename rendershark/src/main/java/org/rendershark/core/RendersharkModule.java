@@ -1,5 +1,7 @@
 package org.rendershark.core;
 
+import javax.inject.Singleton;
+
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
@@ -42,7 +44,7 @@ public abstract class RendersharkModule extends AbstractModule {
             super.configure();
             LOG.info("Configure for HTML rendering");
             bind(ChannelPipelineFactory.class).to(HttpServerPipelineFactory.class);
-            bind(HttpStaticFileServerHandler.class);
+            bind(HttpStaticFileServerHandler.class).in(Singleton.class);
             bind(HttpSelectiveContentCompressor.class);
             bind(HttpRequestHandler.class);
             bind(SessionManager.class);        

@@ -28,14 +28,13 @@ public class HttpServerPipelineFactory implements ChannelPipelineFactory {
     @Inject Provider<HttpStaticFileServerHandler> staticHandlerProvider;
     
     public ChannelPipeline getPipeline() throws Exception {
-        LOG.trace("new pipeline");
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = pipeline();
 
         pipeline.addLast("decoder", requestDecoderProvider.get());
         pipeline.addLast("aggregator", new HttpChunkAggregator(65536));
         pipeline.addLast("encoder", responseEncoderProvider.get());
-        pipeline.addLast("deflater", contentCompressorProvider.get());
+        //pipeline.addLast("deflater", contentCompressorProvider.get());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
         pipeline.addLast("static", staticHandlerProvider.get());
         pipeline.addLast("handler", requestHandlerProvider.get());

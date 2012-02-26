@@ -62,6 +62,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
     @Inject @Named("static.uri.prefix") String uriPrefix = "/static";
     @Inject @Named("static.local.path") String localPath = System.getProperty("user.dir");   
     
+    @Inject private void log() { LOG.info("Translating [{}] to [{}{}]", new String[]{uriPrefix, localPath, uriPrefix}); }
+    
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         HttpRequest request = (HttpRequest) e.getMessage();
@@ -110,8 +112,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
         setContentLength(response, fileLength);
         String ctype = fileNameMap.getContentTypeFor(file.getName().toString());
-        if (ctype == null) ctype = "application/octet-stream"; // fallback
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE,ctype);
+        if (ctype != null) { 
+            response.setHeader(HttpHeaders.Names.CONTENT_TYPE,ctype);
+        }
 
         Channel ch = e.getChannel();
 
@@ -179,7 +182,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
         // Convert file separators.
         uri = uri.replace('/', File.separatorChar);
 
-        // Simplistic dumb security check.
+        // Simplistic dumb security check. TODO
         // You will have to do something serious in the production environment.
         if (uri.contains(File.separator + ".") ||
             uri.contains("." + File.separator) ||
