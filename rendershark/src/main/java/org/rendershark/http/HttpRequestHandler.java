@@ -72,7 +72,8 @@ import org.slf4j.LoggerFactory;
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     private static final String COOKIE_NAME_JSESSIONID = "JSESSIONID";
     private static final HttpSession NO_SESSION = null;
-
+    private static final ContextMap READONLY_EMPTY_MAP = new SimpleContextMap(); 
+    
     private static final Logger LOG = LoggerFactory.getLogger(HttpRequestHandler.class);
 
     @Inject
@@ -97,7 +98,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         final PageContext context = canvas.getPageContext();
         this.shareHeadersInto(request, context);
         this.shareCookiesInto(request, context);
-        this.shareQueryParametersInto(uri, context);
+        this.shareQueryParametersInto(uri.getRawQuery(), context);
         final HttpSession session = this.shareSessionInto(request, context);
 
         if (HttpMethod.GET == httpMethod) {
@@ -311,15 +312,20 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         e.getChannel().close();
     }
 
-    private void shareBodyParametersInto(String body, PageContext context) {
+    void shareBodyParametersInto(String body, PageContext context) {
         // until something better
-        this.shareQueryParametersInto(URI.create("/?" + body), context);
+        this.shareQueryParametersInto("?"+body, context);
     }
 
-    private void shareQueryParametersInto(URI uri, PageContext context) {
-        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri, CharsetUtil.UTF_8);
-        Map<String, List<String>> params = queryStringDecoder.getParameters();
+    void shareQueryParametersInto(String query, PageContext context) {
         ContextMap parametersMap = (ContextMap) context.getObject(PageContext.REQUEST_PARAMETERS, new SimpleContextMap());
+        context.withObject(PageContext.REQUEST_PARAMETERS, parametersMap);
+        
+        if (query == null) {
+            return;
+        }
+        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(query, CharsetUtil.UTF_8);
+        Map<String, List<String>> params = queryStringDecoder.getParameters();        
         if (!params.isEmpty()) {
             for (Entry<String, List<String>> p : params.entrySet()) {
                 String key = p.getKey();
@@ -332,7 +338,5 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                 }
             }
         }
-        // get does not write optional value
-        context.withObject(PageContext.REQUEST_PARAMETERS, parametersMap);
     }
 }
