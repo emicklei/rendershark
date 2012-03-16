@@ -1,4 +1,4 @@
-
 = 0.4 =
 (2012-03-16)
   * fixed handling of query parameters
+  * updated libraries (log4j, jersey)
