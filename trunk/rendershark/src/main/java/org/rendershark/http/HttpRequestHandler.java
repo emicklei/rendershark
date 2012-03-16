@@ -98,7 +98,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         final PageContext context = canvas.getPageContext();
         this.shareHeadersInto(request, context);
         this.shareCookiesInto(request, context);
-        this.shareQueryParametersInto(uri.getRawQuery(), context);
+        this.shareQueryParametersInto(uri.toString(), context);
         final HttpSession session = this.shareSessionInto(request, context);
 
         if (HttpMethod.GET == httpMethod) {
@@ -317,14 +317,14 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         this.shareQueryParametersInto("?"+body, context);
     }
 
-    void shareQueryParametersInto(String query, PageContext context) {
+    void shareQueryParametersInto(String uri, PageContext context) {
         ContextMap parametersMap = (ContextMap) context.getObject(PageContext.REQUEST_PARAMETERS, new SimpleContextMap());
         context.withObject(PageContext.REQUEST_PARAMETERS, parametersMap);
         
-        if (query == null) {
+        if (uri == null) {
             return;
         }
-        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(query, CharsetUtil.UTF_8);
+        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri, CharsetUtil.UTF_8);
         Map<String, List<String>> params = queryStringDecoder.getParameters();        
         if (!params.isEmpty()) {
             for (Entry<String, List<String>> p : params.entrySet()) {
