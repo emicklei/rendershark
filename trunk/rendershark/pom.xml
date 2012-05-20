@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<infinispan.version>5.0.0.FINAL</infinispan.version>
 		<jmockit.version>0.999.12</jmockit.version>
-		<netty.version>3.3.1.Final</netty.version>
+		<netty.version>3.4.5.Final</netty.version>
 		<rendersnake.version>1.6-SNAPSHOT</rendersnake.version>
 	</properties>
 
