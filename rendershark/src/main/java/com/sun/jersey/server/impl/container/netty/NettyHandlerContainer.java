@@ -20,30 +20,41 @@ package com.sun.jersey.server.impl.container.netty;
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
-import org.jboss.netty.channel.*;
-import org.jboss.netty.handler.codec.http.*;
-import org.jboss.netty.buffer.ChannelBufferInputStream;
-import org.jboss.netty.buffer.ChannelBuffers;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBufferInputStream;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
-import com.sun.jersey.spi.container.WebApplication;
+import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.ChannelHandler.Sharable;
+import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
+import org.jboss.netty.handler.codec.http.HttpHeaders;
+import org.jboss.netty.handler.codec.http.HttpRequest;
+import org.jboss.netty.handler.codec.http.HttpResponse;
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+import org.jboss.netty.handler.codec.http.HttpVersion;
+
+import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.core.header.InBoundHeaders;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseWriter;
-import com.sun.jersey.core.header.InBoundHeaders;
-import com.sun.jersey.api.core.ResourceConfig;
-
-import java.net.URI;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import com.sun.jersey.spi.container.WebApplication;
 // TODO: please implement com.sun.jersey.server.impl.container.netty.NettyHandlerContainer.exceptionCaught() for proper handling.
 /**
  * @author Carl Bystrom
  */
-@ChannelPipelineCoverage("all")
+@Sharable
 public class NettyHandlerContainer extends SimpleChannelUpstreamHandler
 {
 	public static final String PROPERTY_BASE_URI = "com.sun.jersey.server.impl.container.netty.baseUri";
@@ -70,7 +81,7 @@ public class NettyHandlerContainer extends SimpleChannelUpstreamHandler
 
 		public OutputStream writeStatusAndHeaders(long contentLength, ContainerResponse cResponse) throws IOException
 		{
-			response = new DefaultHttpResponse(HttpVersion.HTTP_1_0, HttpResponseStatus.valueOf(cResponse.getStatus()));
+			response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.valueOf(cResponse.getStatus()));
 
 			for (Map.Entry<String, List<Object>> e : cResponse.getHttpHeaders().entrySet())
 			{
