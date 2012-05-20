@@ -36,7 +36,6 @@ import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpRequest;
@@ -54,7 +53,7 @@ import com.sun.jersey.spi.container.WebApplication;
 /**
  * @author Carl Bystrom
  */
-@Sharable
+//@Sharable
 public class NettyHandlerContainer extends SimpleChannelUpstreamHandler
 {
 	public static final String PROPERTY_BASE_URI = "com.sun.jersey.server.impl.container.netty.baseUri";
