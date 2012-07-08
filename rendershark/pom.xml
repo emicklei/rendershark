@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark</name>
@@ -12,10 +12,10 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<infinispan.version>5.0.0.FINAL</infinispan.version>
+		<infinispan.version>5.1.0.FINAL</infinispan.version>
 		<jmockit.version>0.999.12</jmockit.version>
-		<netty.version>3.4.5.Final</netty.version>
-		<rendersnake.version>1.6-SNAPSHOT</rendersnake.version>
+		<netty.version>3.5.2.Final</netty.version>
+		<rendersnake.version>1.6</rendersnake.version>
 	</properties>
 
 	<dependencies>
