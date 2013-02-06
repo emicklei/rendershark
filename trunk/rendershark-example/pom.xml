@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark-example</artifactId>
-	<version>0.5</version>
+	<version>0.7</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark-example</name>
@@ -18,14 +18,14 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.rendershark</groupId>
 			<artifactId>rendershark</artifactId>
-			<version>0.5</version>
+			<version>0.7</version>
 		</dependency>
 
 	</dependencies>

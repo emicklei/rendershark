@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark</artifactId>
-	<version>0.6</version>
+	<version>0.7</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark</name>
@@ -12,13 +12,13 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<infinispan.version>5.1.7.Final</infinispan.version>
+		<guava.version>12.0</guava.version>
 		<jmockit.version>0.999.12</jmockit.version>
 		<netty.version>3.5.7.Final</netty.version>
-		<jersey.version>1.14</jersey.version>
+		<jersey.version>1.17</jersey.version>
 		<rendersnake.version>1.7</rendersnake.version>
 		<netty.version>3.5.2.Final</netty.version>
-		<rendersnake.version>1.7</rendersnake.version>
+		<rendersnake.version>1.7.1</rendersnake.version>
 	</properties>
 
 	<dependencies>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.2</version>
 		</dependency>
 
 		<dependency>
@@ -111,15 +111,12 @@
 		</dependency>
 		<!-- end of Logging -->
 
-		<!-- Session Cache <dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache</artifactId> 
-			<version>2.3.1</version> <type>pom</type> </dependency -->
-
 		<!-- Session Cache -->
 		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-core</artifactId>
-			<version>${infinispan.version}</version>
-		</dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guava.version}</version>
+		</dependency>		
 
 	</dependencies>
 
