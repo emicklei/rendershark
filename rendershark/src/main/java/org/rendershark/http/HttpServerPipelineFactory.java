@@ -2,24 +2,20 @@ package org.rendershark.http;
 
 import static org.jboss.netty.channel.Channels.pipeline;
 
-import javax.inject.Inject;
-
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 /**
  * @author emicklei
  */
 public class HttpServerPipelineFactory implements ChannelPipelineFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(HttpServerPipelineFactory.class);
     
     @Inject Provider<HttpRequestDecoder> requestDecoderProvider;
     @Inject Provider<HttpResponseEncoder> responseEncoderProvider;

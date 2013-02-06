@@ -44,7 +44,7 @@ public abstract class RendersharkModule extends AbstractModule {
             super.configure();
             LOG.info("Configure for HTML rendering");
             bind(ChannelPipelineFactory.class).to(HttpServerPipelineFactory.class);
-            bind(HttpStaticFileServerHandler.class).in(Singleton.class);
+            bind(HttpStaticFileServerHandler.class).in(com.google.inject.Singleton.class);
             bind(HttpSelectiveContentCompressor.class);
             bind(HttpRequestHandler.class);
             bind(SessionManager.class);        
