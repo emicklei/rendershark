@@ -96,6 +96,11 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         final HttpMethod httpMethod = request.getMethod();
 
         final PageContext context = canvas.getPageContext();
+        // TODO cleanup
+        StringBuffer full = new StringBuffer();
+        // TODO what about the port?
+        full.append("http://").append(request.getHeader("Host")).append(request.getUri());
+        context.withString(PageContext.REQUEST_URIQ, full.toString());
         this.shareHeadersInto(request, context);
         this.shareCookiesInto(request, context);
         this.shareQueryParametersInto(uri.toString(), context);
