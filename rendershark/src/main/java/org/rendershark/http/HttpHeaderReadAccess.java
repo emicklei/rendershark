@@ -1,5 +1,9 @@
 package org.rendershark.http;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.rendersnake.internal.ContextMap;
 
@@ -83,4 +87,12 @@ public class HttpHeaderReadAccess implements ContextMap {
     public HttpHeaderReadAccess withString(String key, String value) {
         throw new IllegalAccessError("Not Allowed");        
     }
+
+    public Map<Object,Object> toMap() {
+        HashMap<Object,Object> map = new HashMap<Object,Object>();
+        for (String each : request.getHeaderNames()) {
+            map.put(each, request.getHeader(each));
+        }
+        return map;
+    }    
 }
