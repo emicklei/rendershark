@@ -11,6 +11,7 @@ import javax.inject.Named;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     
     private Injector injector;
     private NettyHandlerContainer container;
+    private int maxChunkedContentLength = 64*1024; //TODO should become a externalized property
     
     @Inject public HttpRESTPipelineFactory(Injector injector) {
         this.injector = injector;
@@ -52,6 +54,7 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline = pipeline();
         pipeline.addLast("decoder", new HttpRequestDecoder());
+        pipeline.addLast("chunky", new HttpChunkAggregator(maxChunkedContentLength));
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("jerseyHandler", this.container);
         return pipeline;
@@ -61,7 +64,7 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
         Map<String, Object> props = new HashMap<String, Object>();
         for (Object key : properties.keySet()) {
         	props.put((String)key, properties.get(key));
-        	LOG.trace(key+"="+properties.get(key));
+        	LOG.debug(key+"="+properties.get(key));
         }        
         if (props.get(ClassNamesResourceConfig.PROPERTY_CLASSNAMES) == null)
             LOG.warn("Missing property [com.sun.jersey.config.property.classnames]");
@@ -74,5 +77,9 @@ public class HttpRESTPipelineFactory implements ChannelPipelineFactory {
                 NettyHandlerContainer.class, 
                 rcf, 
                 new GuiceComponentProviderFactory(rcf,this.injector));
+    }
+
+    public void setMaxChunkedContentLength(int maxChunkedContentLength) {
+        this.maxChunkedContentLength = maxChunkedContentLength;
     }
 }
