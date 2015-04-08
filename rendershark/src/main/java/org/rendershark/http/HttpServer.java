@@ -26,8 +26,9 @@ public class HttpServer {
     
     private Injector injector;
     private int acceptingPort;
-    private Channel acceptingChannel;    
-    
+    private Channel acceptingChannel;
+    private int numberOfWorkers = Runtime.getRuntime().availableProcessors() * 2;
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(getVersion() + "\nrendershark [path/to/rendershark.properties]");
@@ -37,6 +38,11 @@ public class HttpServer {
         me.init(args);
         me.startUp();
     }
+
+    public void setNumberOfWorkers(int numberOfWorkers) {
+        this.numberOfWorkers=numberOfWorkers;
+    }
+
     public void init(String[] args) {
         Properties serverProperties = this.loadProperties(args[0]);
         if  (serverProperties == null) return;
@@ -46,7 +52,7 @@ public class HttpServer {
         
         AbstractModule propertiesModule = createPropertiesModule(serverProperties); 
         this.init(Guice.createInjector(propertiesModule, options.serverModule),options.port);
-    }    
+    }
     
     public void init(Injector injector, int listeningPort) {
         this.injector = injector;
@@ -89,7 +95,8 @@ public class HttpServer {
         ServerBootstrap bootstrap = new ServerBootstrap(
                 new NioServerSocketChannelFactory(
                 		Executors.newCachedThreadPool(),
-                		Executors.newCachedThreadPool()));
+                		Executors.newCachedThreadPool(),
+                        numberOfWorkers));
 
         // Set up the event pipeline factory.
         ChannelPipelineFactory factory = injector.getInstance(ChannelPipelineFactory.class);
@@ -136,7 +143,7 @@ public class HttpServer {
     	int port = -1;    	
     	String moduleClassName;
     	Module serverModule;
-    	
+
     	public Options(Properties props) {
     		String value = props.getProperty("http.port", null);
     		if (value != null) {
@@ -144,6 +151,7 @@ public class HttpServer {
     		}
     		moduleClassName = props.getProperty("guice.module");
     	}
+
     	public boolean isValid() {
     	    if (port == -1) {
     	        LOG.error("Missing [http.port] property");
