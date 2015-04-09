@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark</artifactId>
-	<version>0.7.2</version>
+	<version>0.7.3</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark</name>
@@ -18,7 +18,7 @@
 		<jersey.version>1.17</jersey.version>
 		<rendersnake.version>1.7</rendersnake.version>
 		<netty.version>3.5.2.Final</netty.version>
-		<rendersnake.version>1.7.2</rendersnake.version>
+		<rendersnake.version>1.9</rendersnake.version>
 	</properties>
 
 	<dependencies>
@@ -120,21 +120,7 @@
 
 	</dependencies>
 
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>rendershark-repo</id>
-			<url>svn:https://rendershark.googlecode.com/svn/repo</url>
-		</repository>
-	</distributionManagement>
-
 	<repositories>
-
-		<repository>
-			<id>rendersnake-repo</id>
-			<name>Repository for rendersnake</name>
-			<url>http://rendersnake.googlecode.com/svn/repo</url>
-		</repository>
 
 		<repository>
 			<id>repository.jboss.org</id>
@@ -143,6 +129,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+
+		<repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>emicklei</id>
+            <name>emicklei</name>
+            <url>http://dl.bintray.com/emicklei/maven</url>
+        </repository>
+
 	</repositories>
 
 	<build>
