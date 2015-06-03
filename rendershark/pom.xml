@@ -4,7 +4,7 @@
 
 	<groupId>org.rendershark</groupId>
 	<artifactId>rendershark</artifactId>
-	<version>0.7.3</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>rendershark</name>
@@ -18,7 +18,7 @@
 		<jersey.version>1.17</jersey.version>
 		<rendersnake.version>1.7</rendersnake.version>
 		<netty.version>3.5.2.Final</netty.version>
-		<rendersnake.version>1.9</rendersnake.version>
+		<rendersnake.version>1.10-SNAPSHOT</rendersnake.version>
 	</properties>
 
 	<dependencies>
